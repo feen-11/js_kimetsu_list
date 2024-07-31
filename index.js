@@ -11,7 +11,7 @@ const loading = document.getElementById('loading');
 
 async function getKimetsuInfo(apiUrl) {
   showLoading(loading);
-  clearItem();
+  clearItem(jsKimetsuList);
   await fetch(apiUrl)
     .then((response) => {
       if (!response.ok) {
@@ -32,18 +32,9 @@ async function getKimetsuInfo(apiUrl) {
     });
 }
 
-getKimetsuInfo(apiUrlList.all);
-
-radioButtons.forEach((radioButton) => {
-  radioButton.addEventListener('click', () => {
-    const url = apiUrlList[radioButton.value];
-    getKimetsuInfo(url);
-  });
-});
-
-function clearItem() {
-  while (jsKimetsuList.firstChild) {
-    jsKimetsuList.removeChild(jsKimetsuList.firstChild);
+function clearItem(target) {
+  while (target.firstChild) {
+    target.removeChild(target.firstChild);
   }
 }
 
@@ -72,3 +63,12 @@ function createItem(data) {
   characterInfo.appendChild(image);
   jsKimetsuList.appendChild(characterInfo);
 }
+
+getKimetsuInfo(apiUrlList.all);
+
+radioButtons.forEach((radioButton) => {
+  radioButton.addEventListener('click', () => {
+    const url = apiUrlList[radioButton.value];
+    getKimetsuInfo(url);
+  });
+});
