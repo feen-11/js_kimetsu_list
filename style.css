@@ -1,0 +1,8 @@
+#js-kimetu-list {
+  display: flex;
+  justify-content: space-between;
+  gap: 5px;
+}
+li {
+  list-style: none;
+}
