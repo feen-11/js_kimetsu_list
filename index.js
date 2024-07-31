@@ -1,69 +1,74 @@
-const allURL = 'https://ihatov08.github.io/kimetsu_api/api/all.json';
-const hashiraURL = 'https://ihatov08.github.io/kimetsu_api/api/hashira.json';
-const oniURL = 'https://ihatov08.github.io/kimetsu_api/api/oni.json';
+const apiUrlList = {
+  all: 'https://ihatov08.github.io/kimetsu_api/api/all.json',
+  hashira: 'https://ihatov08.github.io/kimetsu_api/api/hashira.json',
+  oni: 'https://ihatov08.github.io/kimetsu_api/api/oni.json',
+  kisatsutai: 'https://ihatov08.github.io/kimetsu_api/api/kisatsutai.json',
+};
+
+const radioButtons = document.querySelectorAll('input');
 const jsKimetsuList = document.getElementById('js-kimetsu-list');
-const kisatsutaiURL =
-  'https://ihatov08.github.io/kimetsu_api/api/kisatsutai.json';
-async function fetchAPI(apiUrl) {
+const loading = document.getElementById('loading');
+
+async function getKimetsuInfo(apiUrl) {
+  showLoading(loading);
+  clearItem();
   await fetch(apiUrl)
     .then((response) => {
       if (!response.ok) {
         console.error('エラーレスポンス', response);
       } else {
         response.json().then((characters) => {
-          console.log(characters);
           characters.map((character) => {
-            console.log(character);
-            const characterInfo = document.createElement('li');
-            const name = document.createElement('p');
-            name.textContent = character.name;
-            const category = document.createElement('p');
-            category.textContent = character.category;
-            const image = document.createElement('img');
-            image.setAttribute(
-              'src',
-              `https://ihatov08.github.io${character.image}`
-            );
-            characterInfo.appendChild(name);
-            characterInfo.appendChild(category);
-            characterInfo.appendChild(image);
-            jsKimetsuList.appendChild(characterInfo);
+            createItem(character);
           });
         });
       }
     })
     .catch((error) => {
       console.error(error);
+    })
+    .finally(() => {
+      hideLoading(loading);
     });
 }
 
-function escapeSpecialChars(str) {
-  return str
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#039;');
-}
+getKimetsuInfo(apiUrlList.all);
 
-function escapeHTML(strings, ...values) {
-  return strings.reduce((result, str, i) => {
-    const value = values[i - 1];
-    if (typeof value === 'string') {
-      return result + escapeSpecialChars(value) + str;
-    } else {
-      return result + String(value) + str;
-    }
+radioButtons.forEach((radioButton) => {
+  radioButton.addEventListener('click', () => {
+    const url = apiUrlList[radioButton.value];
+    getKimetsuInfo(url);
   });
+});
+
+function clearItem() {
+  while (jsKimetsuList.firstChild) {
+    jsKimetsuList.removeChild(jsKimetsuList.firstChild);
+  }
 }
 
-const all = fetchAPI(allURL);
-// const hashira = fetchAPI(hashiraURL);
-// const oni = fetchAPI(oniURL);
-// const kisatsutai = fetchAPI(kisatsutaiURL);
+function showLoading(target) {
+  target.style.display = 'flex';
+}
 
-// jsonを表示する
-// 切り替えボタン（ラジオボタン）設置
-// ボタンを押すごとに各API取得をトリガー
-// HTML書き換え
-// ローディング画面
+function hideLoading(target) {
+  target.style.display = 'none';
+}
+
+function createItem(data) {
+  const characterInfo = document.createElement('li');
+
+  const name = document.createElement('h2');
+  name.textContent = data.name;
+
+  const category = document.createElement('p');
+  category.textContent = data.category;
+
+  const image = document.createElement('img');
+  image.setAttribute('src', `https://ihatov08.github.io${data.image}`);
+
+  characterInfo.appendChild(name);
+  characterInfo.appendChild(category);
+  characterInfo.appendChild(image);
+  jsKimetsuList.appendChild(characterInfo);
+}
