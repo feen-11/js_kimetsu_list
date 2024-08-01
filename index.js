@@ -1,8 +1,9 @@
+const apiDomain = 'https://ihatov08.github.io/kimetsu_api/api/';
 const apiUrlList = {
-  all: 'https://ihatov08.github.io/kimetsu_api/api/all.json',
-  hashira: 'https://ihatov08.github.io/kimetsu_api/api/hashira.json',
-  oni: 'https://ihatov08.github.io/kimetsu_api/api/oni.json',
-  kisatsutai: 'https://ihatov08.github.io/kimetsu_api/api/kisatsutai.json',
+  all: `${apiDomain}all.json`,
+  hashira: `${apiDomain}hashira.json`,
+  oni: `${apiDomain}oni.json`,
+  kisatsutai: `${apiDomain}kisatsutai.json`,
 };
 
 const radioButtons = document.querySelectorAll('input');
